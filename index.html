@@ -33,12 +33,12 @@
         <label class="radio-item">
             <input type="radio" id="sugar" name="display" value="sugar">
             <div class="radio-dot"></div>
-            Sugar Cubes (1 Teaspoons)
+            Sugar Cubes (1 Teaspoons/4 grams)
         </label>
         <label class="radio-item">
             <input type="radio" id="apple" name="display" value="apple">
             <div class="radio-dot"></div>
-            Apples (3 Teaspoons)
+            Apples (3 Teaspoons/12 grams)
         </label>
     </div>
     <br>
@@ -127,6 +127,9 @@
       <select id="dropdown3"></select>
     </div>
     <div id="select-section"></div>  <!-- style="visibility: hidden;" -->
+    <br>
+    <br>
+    <br>
     
     <script>
     // wrap function ---------------------- 
@@ -702,7 +705,7 @@
         const diabetesDataExtent = d3.extent(data, d => d.Value);
 
         const colorScale = d3.scaleSequential()
-                              .interpolator(d3.interpolateYlOrRd)
+                              .interpolator(d3.interpolateReds)
                               .domain(diabetesDataExtent);
         //http://using-d3js.com/04_08_legends.html
         const legendBar = d3.legendColor()
