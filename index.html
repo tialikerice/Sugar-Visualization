@@ -616,10 +616,22 @@
                 .text("Women");
 
       chartArea5.append("text")
+                .attr("x", width / 4)
+                .attr("y", height / 1.2 + 35)
+                .attr("text-anchor", "middle")
+                .text("6 teaspoon");
+
+      chartArea5.append("text")
                 .attr("x", (3 * width) / 4)
                 .attr("y", height / 1.2 + 20)
                 .attr("text-anchor", "middle")
                 .text("Man");
+
+      chartArea5.append("text")
+                .attr("x", (3 * width) / 4)
+                .attr("y", height / 1.2 + 35)
+                .attr("text-anchor", "middle")
+                .text("9 teaspoon");
 
       const RecommandationAmount = [
         { type: "Women", teaspoonOfSugar: 6 },
