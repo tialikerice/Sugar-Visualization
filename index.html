@@ -841,22 +841,30 @@
                                       .style("stroke-width", "0.5px");})
                               
                       });
-
+        //why need this function: when hover on heatmap cell, I want the tooltip shows on map to show the diabetes rate
+        //so I need a function to find the countries's position, I want the tooltip to show on the center of the country in map
+        // I use the centroid function to find the countries's center 
         function getCountryCentroid(countryName) {
             const countryFeature = countries.features.find((d) => d.properties.name === countryName);
             if (countryFeature) {
               //https://observablehq.com/@proclamo/d3-centroid-example
               const centroid = path.centroid(countryFeature);//find the center of the country
               //https://stackoverflow.com/questions/21990857/d3-js-how-to-get-the-computed-width-and-height-for-an-arbitrary-element
-              const svgRect = svg.node().getBoundingClientRect();//.getBoundingClientRect() returns the size of an element and its position relative to the viewport.We can easily get following left, right top, bottom height, width
+              //.getBoundingClientRect() returns the size of an element and its position relative to the viewport:
+              //We can easily get following left, right top, bottom height, width
+              const svgRect = svg.node().getBoundingClientRect();
+              console.log(svgRect.left + "," + svgRect.top + "," + centroid[0])
               return {
+                //https://stackoverflow.com/questions/9627005/svg-getting-the-position-of-an-element-relative-to-the-page
                   x: centroid[0] + svgRect.left + window.pageXOffset,
                   y: centroid[1] + svgRect.top + window.pageYOffset,
               };
             }
             return null;
         }
-
+        // window function is global function, define a global function in a function need .window
+        // I need a function to be called in heatmap, when user hover on the heatmap
+        // this function will be triggered so they can see the tooltip on the map
         window.highlightMapCountry = function (countryName, highlight) {
             const target = d3.select("#diabetes-map")
                 .data(countries.features)
