@@ -51,7 +51,7 @@
     <svg id="second-section" width="800" height="600"></svg>
     <div id="tooltip" style="opacity: 0; position: absolute;"></div>
     <hr class="solid">
-    <!-- --------third-section------------- -->
+    <!-- --------third-section-------------- -->
     <h2>Sugar-Sweetened Drinks Can Harm Your Health!</h2>
     <div id="third-section" style=" text-align:center; width: 50%;  margin: auto;">
         <p style="text-align: left;"> 
@@ -410,31 +410,28 @@
                           .attr("y1", "0%")
                           .attr("x2", "100%")
                           .attr("y2", "0%");
-      gradient
-        .append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", "yellow")
-        .attr("stop-opacity", 1);
+      gradient.append("stop")
+              .attr("offset", "0%")
+              .attr("stop-color", "yellow")
+              .attr("stop-opacity", 1);
 
-      gradient
-        .append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", "red")
-        .attr("stop-opacity", 1);
+      gradient.append("stop")
+              .attr("offset", "100%")
+              .attr("stop-color", "red")
+              .attr("stop-opacity", 1);
       
       const line = d3.line()
                       .x((d) => xScale(d.title) + xScale.bandwidth() / 2)
                       .y((d) => yScale(d.percent));
                       
-      const path = lineChartGroup
-                  .append("path")
-                  .datum(data)
-                  .attr("class", "line")
-                  .attr("d", line)
-                  .attr("fill", "none")
-                  .attr("stroke", "url(#gradient)")
-                  .attr("stroke-width", 2)
-                  .style("opacity", 0);
+      const path = lineChartGroup.append("path")
+                                  .datum(data)
+                                  .attr("class", "line")
+                                  .attr("d", line)
+                                  .attr("fill", "none")
+                                  .attr("stroke", "url(#gradient)")
+                                  .attr("stroke-width", 2)
+                                  .style("opacity", 0);
 
       lineChartGroup.selectAll('.lineChartdot')
                     .data(data)
@@ -486,23 +483,22 @@
                             tooltip2.style('opacity', 0);
                           }); 
 
-          lineChartGroup
-            .selectAll('.percent-label')
-            .transition()
-            .delay((d, i) => i * 200) // animation
-            .duration(2000)
-            .style('opacity', 1);
+          lineChartGroup.selectAll('.percent-label')
+                        .transition()
+                        .delay((d, i) => i * 200) // animation
+                        .duration(2000)
+                        .style('opacity', 1);
 
             chartArea2.selectAll('image')
-            .style('opacity', 0.5);
+                      .style('opacity', 0.5);
       });
 
       const tooltip2 = d3.select('#tooltip2')
-                          .style("background-color", "white")
-                          .style("padding", "5px")
-                          .style("border", "1px solid black")
-                          .style("border-radius", "5px")
-                          .style('opacity', 0);
+                        .style("background-color", "white")
+                        .style("padding", "5px")
+                        .style("border", "1px solid black")
+                        .style("border-radius", "5px")
+                        .style('opacity', 0);
 
       data.forEach((d) => {
           const maxImagesPerRow = 3; 
@@ -514,29 +510,27 @@
                   const yPos = height - (row + 1) * 25;//height
 
                   chartArea2.append('image')
-                      .attr('xlink:href', 'drink.png')
-                      .attr('width', 25)
-                      .attr('height', 25)
-                      .attr('x', xPos + 20) 
-                      .attr('y', yPos)
-                      .on('mouseover', function (event) {
-                        d3.select(event.currentTarget).style("cursor", "pointer");
-                        tooltip2
-                          .style('left', event.pageX + 10 + 'px')
-                          .style('top', event.pageY - 25 + 'px')
-                          .style('opacity', 1)
-                          .html(`<strong>${d.title2}</strong>`);
-                      })
-                      .on('mouseout', function () {
-                        tooltip2.style('opacity', 0);
-                      });
-                d.cup--;
-            }
-          }
-        });
-
-    lineChartGroup.raise();
-    
+                            .attr('xlink:href', 'drink.png')
+                            .attr('width', 25)
+                            .attr('height', 25)
+                            .attr('x', xPos + 20) 
+                            .attr('y', yPos)
+                            .on('mouseover', function (event) {
+                              d3.select(event.currentTarget).style("cursor", "pointer");
+                              tooltip2
+                                .style('left', event.pageX + 10 + 'px')
+                                .style('top', event.pageY - 25 + 'px')
+                                .style('opacity', 1)
+                                .html(`<strong>${d.title2}</strong>`);
+                            })
+                            .on('mouseout', function () {
+                              tooltip2.style('opacity', 0);
+                            });
+                      d.cup--;
+                  }
+                }
+              });
+      lineChartGroup.raise();
     };
     ThirdSection();
 
@@ -619,7 +613,7 @@
                 .attr("x", width / 4)
                 .attr("y", height / 1.2 + 35)
                 .attr("text-anchor", "middle")
-                .text("6 teaspoon");
+                .text("6 teaspoon/24 grams");
 
       chartArea5.append("text")
                 .attr("x", (3 * width) / 4)
@@ -631,7 +625,7 @@
                 .attr("x", (3 * width) / 4)
                 .attr("y", height / 1.2 + 35)
                 .attr("text-anchor", "middle")
-                .text("9 teaspoon");
+                .text("9 teaspoon/36 grams");
 
       const RecommandationAmount = [
         { type: "Women", teaspoonOfSugar: 6 },
@@ -851,10 +845,12 @@
         function getCountryCentroid(countryName) {
             const countryFeature = countries.features.find((d) => d.properties.name === countryName);
             if (countryFeature) {
-              const centroid = path.centroid(countryFeature);
-              const svgRect = svg.node().getBoundingClientRect();
+              //https://observablehq.com/@proclamo/d3-centroid-example
+              const centroid = path.centroid(countryFeature);//find the center of the country
+              //https://stackoverflow.com/questions/21990857/d3-js-how-to-get-the-computed-width-and-height-for-an-arbitrary-element
+              const svgRect = svg.node().getBoundingClientRect();//.getBoundingClientRect() returns the size of an element and its position relative to the viewport.We can easily get following left, right top, bottom height, width
               return {
-                  x: centroid[0] + svgRect.left + window.pageXOffset,//find the 
+                  x: centroid[0] + svgRect.left + window.pageXOffset,
                   y: centroid[1] + svgRect.top + window.pageYOffset,
               };
             }
@@ -882,7 +878,7 @@
                 //console.log(diabetesMap)
                 const name = countryName;
                 const diabetes = newDiabetesMap.get(name);
-                const centroid = getCountryCentroid(name);
+                const centroid = getCountryCentroid(name); //get the center of the country selected
                 //console.log(centroid)
 
                 if (centroid) {
@@ -1282,7 +1278,7 @@
             }
 
             const color = d3.scaleOrdinal(["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf", "#dba860","#100102" ])
-                .domain(Array.from(new Set(data.map(d => d["Category"])))); 
+                            .domain(Array.from(new Set(data.map(d => d["Category"])))); 
             
             const uniqueCategories = new Set(data.map(d => d["Category"]));
             const lengthCategory = uniqueCategories.size;
@@ -1447,8 +1443,7 @@
                             .attr("dy", ".71em")
                             .attr("font-size", 14)
                             .text(d => d);
-            }
-            
+            }      
         };
 
         EighthSection();
