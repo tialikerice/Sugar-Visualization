@@ -208,7 +208,7 @@
             d3.selectAll(".appleOrSugarImage")
               .each(function () { //if use "() =>"" here, this does not work, so have to use
                 const appleOrSugarImage = d3.select(this);
-                const d = appleOrSugarImage.datum(); //get data of appleOrSugarImage
+                const d = appleOrSugarImage.datum(); //data of appleOrSugarImage
                 appleOrSugarImage.selectAll("img").remove();
                 const count = showApplesOrSugar ? d.apple_number : d.cube_suger_number;
                 for (let i = 0; i < count; i++) {
@@ -715,10 +715,10 @@
                               .domain(diabetesDataExtent);
         //http://using-d3js.com/04_08_legends.html
         const legendBar = d3.legendColor()
-          .shapeWidth(70)
-          .cells(6)
-          .orient("horizontal")
-          .scale(colorScale);
+                            .shapeWidth(70)
+                            .cells(6)
+                            .orient("horizontal")
+                            .scale(colorScale);
         
         d3.select(".diabetesMap")
           .append("g")
@@ -740,10 +740,21 @@
                           .style("border", "1px solid black")
                           .style("border-radius", "5px");
         
+        // Add a clipPath: everything out of this area won't be drawn.
+        var clip = svg.append("defs")
+                      .append("SVG:clipPath")
+                      .attr("id", "clip")
+                      .append("SVG:rect")
+                      .attr("width", width )
+                      .attr("height", height)
+                      .attr("x", 0)
+                      .attr("y", 50);                    
+        
         const normalOpacity = 1;
         const reducedOpacity = 0.5;
-
-        const mapContainer = svg.append("g");
+        var scatter = svg.append('g')
+                          .attr("clip-path", "url(#clip)")
+        const mapContainer = scatter.append("g");
         function handleZoom(event) {
           mapContainer.attr("transform", event.transform);
         }
@@ -867,9 +878,9 @@
         // this function will be triggered so they can see the tooltip on the map
         window.highlightMapCountry = function (countryName, highlight) {
             const target = d3.select("#diabetes-map")
-                .data(countries.features)
-                .selectAll("path")
-                .filter((d) => d.properties.name === countryName);
+                              .data(countries.features)
+                              .selectAll("path")
+                              .filter((d) => d.properties.name === countryName);
 
             target.style("stroke", highlight ? "black" : "none")
                   .style("stroke-width", highlight ? "2px" : "0");
@@ -892,9 +903,9 @@
                 if (centroid) {
                     //console.log("heiehie")
                     tooltip_diabetesMap.html(`Country: ${name}<br>Diabetes: ${diabetes ? diabetes.toFixed(2) + '%' : 'N/A'}`)
-                        .style("visibility", "visible")
-                        .style("left", centroid.x + 5 +"px")
-                        .style("top", centroid.y + 5 +"px");
+                                        .style("visibility", "visible")
+                                        .style("left", centroid.x + 5 +"px")
+                                        .style("top", centroid.y + 5 +"px");
                 }
             } else {
                 tooltip_diabetesMap.style("visibility", "hidden");
@@ -918,25 +929,26 @@
         const radius = Math.min(width, height) / 2 * 0.6; // resize
         const innerRadius = 180 * 0.45; 
 
-        const svg = d3
-          .select("#sixth-section")
-          .append("svg")
-          .attr('class', 'heatmapsvg')
-          .attr("width", width + margin.left + margin.right)
-          .attr("height", height + margin.top + margin.bottom)
-          .append("g")
-          .attr("transform", `translate(${width / 2 + margin.left},${height / 2 + margin.top})`);
+        const svg = d3.select("#sixth-section")
+                      .append("svg")
+                      .attr('class', 'heatmapsvg')
+                      .attr("width", width + margin.left + margin.right)
+                      .attr("height", height + margin.top + margin.bottom)
+                      .append("g")
+                      .attr("transform", `translate(${width / 2 + margin.left},${height / 2 + margin.top})`);
 
         const countries = Array.from(new Set(data.map((d) => d.Country)));
         const years = Array.from(new Set(data.map((d) => d.Year)));
 
-        const countryScale = d3
-                              .scaleBand()
-                              .domain(countries)
-                              .range([0, 2 * Math.PI*0.91])
-                              .padding(0.01);
+        const countryScale = d3.scaleBand()
+                                .domain(countries)
+                                .range([0, 2 * Math.PI*0.91])
+                                .padding(0.01);
 
-        const yearScale = d3.scaleBand().domain(years).range([innerRadius, radius]).padding(0.01);
+        const yearScale = d3.scaleBand()
+                            .domain(years)
+                            .range([innerRadius, radius])
+                            .padding(0.01);
 
         const colorScale = d3.scaleSequential()
                             .domain([
@@ -977,7 +989,11 @@
             .delay((d, i) => Math.random() * data.length * 10) // animation
             .style("opacity", 1);
 
-        const tooltip = d3.select("#tooltip4").style("background-color", "white").style("padding", "5px").style("border", "1px solid black").style("border-radius", "5px");
+        const tooltip = d3.select("#tooltip4")
+                          .style("background-color", "white")
+                          .style("padding", "5px")
+                          .style("border", "1px solid black")
+                          .style("border-radius", "5px");
 
         svg.selectAll(".cell")
             .on("mouseover", (event, d) => {
@@ -989,17 +1005,22 @@
                                               .style('stroke', 'black')
                                               .style('stroke-width', '2px')
                                               .style('opacity', 1);
-                tooltip.style("opacity", 1).text(`Country: ${d.Country}\nYear: ${d.Year}\nValue: ${d.Value}`)
+                tooltip.style("opacity", 1)
+                      .text(`Country: ${d.Country}\nYear: ${d.Year}\nValue: ${d.Value}`)
                       .style("left", event.pageX + 10 + "px")
                       .style("top", event.pageY - 10 + "px");
             })
             .on("mousemove", (event) => {
-                tooltip.style("left", event.pageX + 10 + "px").style("top", event.pageY - 10 + "px");
+                tooltip.style("left", event.pageX + 10 + "px")
+                        .style("top", event.pageY - 10 + "px");
             })
             .on("mouseout", (event, d) => {
                 window.highlightMapCountry(d.Country, false);
                 svg.selectAll(".cell").style('opacity', 1);
-                d3.select(event.currentTarget).style("cursor", "default").style('stroke', 'lightgrey').style('stroke-width', '0.5px')
+                d3.select(event.currentTarget)
+                  .style("cursor", "default")
+                  .style('stroke', 'lightgrey')
+                  .style('stroke-width', '0.5px')
                 tooltip.style("opacity", 0);
             });
           
@@ -1121,10 +1142,11 @@
             const padding = 30;
 
             const x = variables.map(variable => d3.scaleLinear()
-                .domain(d3.extent(data, d => Number(d[variable])))
-                .rangeRound([padding / 2, size - padding / 2]));
+                                                  .domain(d3.extent(data, d => Number(d[variable])))
+                                                  .rangeRound([padding / 2, size - padding / 2]));
 
-            const y = x.map(x => x.copy().range([size - padding / 2, padding / 2]));
+            const y = x.map(x => x.copy()
+                                  .range([size - padding / 2, padding / 2]));
 
             const z = d3.scaleOrdinal()
                 .domain(data.map(d => d.Category))
@@ -1138,12 +1160,13 @@
                 .ticks(6)
                 .tickSize(-size * variables.length);
 
-            const svg = d3.select("#eight-section").append("svg")
-                .attr("width", size * variables.length + padding)
-                .attr("height", size * variables.length + padding)
-                .attr("style", "background-color: transparent;")
-                .append("g")
-                .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
+            const svg = d3.select("#eight-section")
+                          .append("svg")
+                          .attr("width", size * variables.length + padding)
+                          .attr("height", size * variables.length + padding)
+                          .attr("style", "background-color: transparent;")
+                          .append("g")
+                          .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
 
             svg.selectAll(".x.axis")
                 .data(variables)
@@ -1314,7 +1337,8 @@
 
             legend.selectAll("text")
                 .data(legendData)
-                .enter().append("text")
+                .enter()
+                .append("text")
                 .attr("x", 1 + 6)
                 .attr("y", (d, i) => padding * (i + 1))
                 .attr("dy", ".35em")
@@ -1323,7 +1347,9 @@
             function updatePlot() {
               const selectedCategory = dropdown.node().value;
               svg.selectAll(".cell").each(function (p) {
-                d3.select(this).selectAll("circle").remove();
+                d3.select(this)
+                  .selectAll("circle")
+                  .remove();
                 plot.call(this, p, selectedCategory);
               });
             }
