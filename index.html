@@ -8,7 +8,7 @@
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://d3js.org/topojson.v3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
-    <link rel="stylesheet" href="style2.css">
+    <link rel="stylesheet" href="style.css">
     <h1> Added Suger & SSB & Death </h1>
     <p>Tianchen Wang 2023 March</p>
 </head>
@@ -269,7 +269,7 @@
             .attr('y', 40)
             .attr('fill', 'black')
             .style('text-anchor', 'middle')
-            .style('font-family', 'Lato, Helvetica, sans-serif')
+            .style('font-family', 'NYTFranklin, Georgia, serif')
             .text('Teaspoons of Sugar')
             .style('font-size', '15px');
 
@@ -278,7 +278,7 @@
             .style('font-size', '12px')
             .attr('transform', `translate(${margin.left-40}, 0)`) 
             .append('text')
-            .style('font-family', 'Lato, Helvetica, sans-serif')
+            .style('font-family', 'NYTFranklin, Georgia, serif')
             .attr('transform', 'rotate(-90)')
             .attr('x', -height / 2)
             .attr('y', -40)
@@ -333,7 +333,7 @@
                 .attr('x', d => xScale(d.Teaspoons_of_Sugar))
                 .attr('y', d => yScale(d.Total_Drink_Calories) + imageHeight / 2 + 10)
                 .style('text-anchor', 'middle')
-                .style('font-family', 'Lato, Helvetica, sans-serif')
+                .style('font-family', 'NYTFranklin, Georgia, serif')
                 .text(d => d.drink_name)
                 .style('font-size', '9px')
                 .call(wrap, 50);;
