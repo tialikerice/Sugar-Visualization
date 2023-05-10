@@ -9,7 +9,7 @@
     <script src="https://d3js.org/topojson.v3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
     <link rel="stylesheet" href="style.css">
-    <h1> Added Suger & Sugar-Sweetened Drinks & Death </h1>
+    <h1> Added Suger & SSB & Death </h1>
     <p>Tianchen Wang 2023 March</p>
 </head>
 <style>
@@ -269,7 +269,7 @@
             .attr('y', 40)
             .attr('fill', 'black')
             .style('text-anchor', 'middle')
-            .style('font-family', 'Lato, Helvetica, sans-serif')
+            .style('font-family', 'NYTFranklin, Georgia, serif')
             .text('Teaspoons of Sugar')
             .style('font-size', '15px');
 
@@ -278,7 +278,7 @@
             .style('font-size', '12px')
             .attr('transform', `translate(${margin.left-40}, 0)`) 
             .append('text')
-            .style('font-family', 'Lato, Helvetica, sans-serif')
+            .style('font-family', 'NYTFranklin, Georgia, serif')
             .attr('transform', 'rotate(-90)')
             .attr('x', -height / 2)
             .attr('y', -40)
@@ -333,7 +333,7 @@
                 .attr('x', d => xScale(d.Teaspoons_of_Sugar))
                 .attr('y', d => yScale(d.Total_Drink_Calories) + imageHeight / 2 + 10)
                 .style('text-anchor', 'middle')
-                .style('font-family', 'Lato, Helvetica, sans-serif')
+                .style('font-family', 'NYTFranklin, Georgia, serif')
                 .text(d => d.drink_name)
                 .style('font-size', '9px')
                 .call(wrap, 50);;
@@ -517,11 +517,10 @@
                             .attr('y', yPos)
                             .on('mouseover', function (event) {
                               d3.select(event.currentTarget).style("cursor", "pointer");
-                              tooltip2
-                                .style('left', event.pageX + 10 + 'px')
-                                .style('top', event.pageY - 25 + 'px')
-                                .style('opacity', 1)
-                                .html(`<strong>${d.title2}</strong>`);
+                              tooltip2.style('left', event.pageX + 10 + 'px')
+                                  .style('top', event.pageY - 25 + 'px')
+                                  .style('opacity', 1)
+                                  .html(`<strong>${d.title2}</strong>`);
                             })
                             .on('mouseout', function () {
                               tooltip2.style('opacity', 0);
@@ -717,6 +716,7 @@
         const legendBar = d3.legendColor()
                             .shapeWidth(70)
                             .cells(6)
+                            .labelFormat(d3.format(".0f"))
                             .orient("horizontal")
                             .scale(colorScale);
         
@@ -758,7 +758,8 @@
         function handleZoom(event) {
           mapContainer.attr("transform", event.transform);
         }
-        const zoomBehavior = d3.zoom().on("zoom", handleZoom);
+        const zoomBehavior = d3.zoom()
+                                .on("zoom", handleZoom);
         svg.call(zoomBehavior);
 
         mapContainer.selectAll("path")
@@ -784,24 +785,27 @@
                     .filter(value => value !== d)
                     .style("opacity", reducedOpacity);
 
-                const heatmapCells = d3.select("#sixth-section").selectAll(".cell").filter((cell) => cell.Country === name);
+                const heatmapCells = d3.select("#sixth-section")
+                                        .selectAll(".cell")
+                                        .filter((cell) => cell.Country === name);
                 heatmapCells.style("stroke", "black")
                             .style("stroke-width", "2px");
 
             })
             .on("mousemove", function (event) {
                 tooltip_diabetesMap.style("top", (event.pageY - 10) + "px")
-                    .style("left", (event.pageX + 10) + "px");
+                                    .style("left", (event.pageX + 10) + "px");
             })
             .on("mouseout", function (event, d) {
                 mapContainer.selectAll("path")
-                    .style('opacity', normalOpacity);
+                            .style('opacity', normalOpacity);
                 d3.select(event.currentTarget).style("cursor", "default");
                 tooltip_diabetesMap.style("visibility", "hidden");
 
                 // Reset all heatmap cells stroke
                 const name = d.properties.name;
-                const heatmapCells = d3.select("#sixth-section").selectAll(".cell");
+                const heatmapCells = d3.select("#sixth-section")
+                                        .selectAll(".cell");
                 heatmapCells.style("stroke", "lightgrey")
                             .style("stroke-width", "0.5px");
 
@@ -822,7 +826,8 @@
                         return diabetes ? colorScale(diabetes) : "#ccc";
                     })            
                     .on("mouseover", function (event, d) {
-                        d3.select(event.currentTarget).style("cursor", "pointer");
+                        d3.select(event.currentTarget)
+                          .style("cursor", "pointer");
                         const name = d.properties.name;
                         const diabetes = newDiabetesMap.get(name);
 
@@ -837,17 +842,20 @@
                       })
                       .on("mousemove", function (event) {
                           tooltip_diabetesMap.style("top", (event.pageY - 10) + "px")
-                              .style("left", (event.pageX + 10) + "px");
+                                            .style("left", (event.pageX + 10) + "px");
                       })
                       .on("mouseout", function (event, d) {
                           mapContainer.selectAll("path")
-                              .style('opacity', normalOpacity);
-                          d3.select(event.currentTarget).style("cursor", "default");
+                                      .style('opacity', normalOpacity);
+
+                          d3.select(event.currentTarget)
+                            .style("cursor", "default");
                           tooltip_diabetesMap.style("visibility", "hidden");
             
                           // Reset heatmap cells stroke
                           const name = d.properties.name;
-                          const heatmapCells = d3.select("#sixth-section").selectAll(".cell");
+                          const heatmapCells = d3.select("#sixth-section")
+                                                  .selectAll(".cell");
                           heatmapCells.style("stroke", "lightgrey")
                                       .style("stroke-width", "0.5px");})
                               
@@ -959,11 +967,12 @@
 
         //http://using-d3js.com/04_08_legends.html
         const legendBar = d3.legendColor()
-          .shapeWidth(70)
-          .cells(6)
-          .orient("horizontal")
-          .scale(colorScale);
-        
+                            .shapeWidth(70)
+                            .labelFormat(d3.format(".0f"))
+                            .cells(6)
+                            .orient("horizontal")
+                            .scale(colorScale);
+                          
         d3.select(".heatmapsvg")
           .append("g")
           .attr("transform", "translate(150,0)")
@@ -1046,6 +1055,7 @@
             }`;
           })
           .append("text")
+          //aligning text to left if its position is greater than Math.PI.
           .attr("text-anchor", (d) => (countryScale(d) + countryScale.bandwidth() / 2 > Math.PI ? "end" : "start"))
           .attr("dy", "0.35em")
           .text((d) => d)
@@ -1095,388 +1105,390 @@
         
         //categ dropdown
         const dropdown = d3.select("#select-section")
-          .append("select")
-          .attr("mutiple", true)
-          .attr("id", "category-dropdown")
-          .on("change", function () {
-            updatePlot(this.value);
-          });
+                          .append("select")
+                          .attr("mutiple", true)
+                          .attr("id", "category-dropdown")
+                          .on("change", function () {
+                            updatePlot(this.value);
+                          });
 
         dropdown.selectAll("option")
-          .data(categories)
-          .enter().append("option")
-          .attr("value", d => d)
-          .text(d => d);
+              .data(categories)
+              .enter()
+              .append("option")
+              .attr("value", d => d)
+              .text(d => d);
+            
+        const dropdown1 = d3.select("#dropdown1");
+        const dropdown2 = d3.select("#dropdown2");
+        const dropdown3 = d3.select("#dropdown3");
+
+        availableColumns.forEach(column => {
+          dropdown1.append("option").text(column).property("value", column);
+          dropdown2.append("option").text(column).property("value", column);
+          dropdown3.append("option").text(column).property("value", column);
+        });
+
+        dropdown1.node().value = variables[1];
+        dropdown2.node().value = variables[2];
+        dropdown3.node().value = variables[3];
         
-            const dropdown1 = d3.select("#dropdown1");
-            const dropdown2 = d3.select("#dropdown2");
-            const dropdown3 = d3.select("#dropdown3");
+        function updateVariables() {
+          const variable1 = dropdown1.property("value");
+          const variable2 = dropdown2.property("value");
+          const variable3 = dropdown3.property("value");
 
-            availableColumns.forEach(column => {
-              dropdown1.append("option").text(column).property("value", column);
-              dropdown2.append("option").text(column).property("value", column);
-              dropdown3.append("option").text(column).property("value", column);
-            });
-
-            dropdown1.node().value = variables[1];
-            dropdown2.node().value = variables[2];
-            dropdown3.node().value = variables[3];
-            
-            function updateVariables() {
-              const variable1 = dropdown1.property("value");
-              const variable2 = dropdown2.property("value");
-              const variable3 = dropdown3.property("value");
-
-              return [
-                "Sugar Total",
-                variable1,
-                variable2,
-                variable3
-              ];
-            }
+          return [
+            "Sugar Total",
+            variable1,
+            variable2,
+            variable3
+          ];
+        }
 /*             dropdown1.property("value", "Fat.Saturated Fat");
-            dropdown2.property("value", "Protein");
-            dropdown3.property("value", "Fiber"); */
+        dropdown2.property("value", "Protein");
+        dropdown3.property("value", "Fiber"); */
 
-            const size = 190;
-            const padding = 30;
+        const size = 190;
+        const padding = 30;
 
-            const x = variables.map(variable => d3.scaleLinear()
-                                                  .domain(d3.extent(data, d => Number(d[variable])))
-                                                  .rangeRound([padding / 2, size - padding / 2]));
+        const x = variables.map(variable => d3.scaleLinear()
+                                              .domain(d3.extent(data, d => Number(d[variable])))
+                                              .rangeRound([padding / 2, size - padding / 2]));
 
-            const y = x.map(x => x.copy()
-                                  .range([size - padding / 2, padding / 2]));
+        const y = x.map(x => x.copy()
+                              .range([size - padding / 2, padding / 2]));
 
-            const z = d3.scaleOrdinal()
-                .domain(data.map(d => d.Category))
-                .range(["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf", "#dba860","#100102" ]);
+        const z = d3.scaleOrdinal()
+            .domain(data.map(d => d.Category))
+            .range(["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf", "#dba860","#100102" ]);
 
-            const xAxis = d3.axisBottom()
-                .ticks(6)
-                .tickSize(size * variables.length);
+        const xAxis = d3.axisBottom()
+            .ticks(6)
+            .tickSize(size * variables.length);
 
-            const yAxis = d3.axisLeft()
-                .ticks(6)
-                .tickSize(-size * variables.length);
+        const yAxis = d3.axisLeft()
+            .ticks(6)
+            .tickSize(-size * variables.length);
 
-            const svg = d3.select("#eight-section")
-                          .append("svg")
-                          .attr("width", size * variables.length + padding)
-                          .attr("height", size * variables.length + padding)
-                          .attr("style", "background-color: transparent;")
-                          .append("g")
-                          .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
+        const svg = d3.select("#eight-section")
+                      .append("svg")
+                      .attr("width", size * variables.length + padding)
+                      .attr("height", size * variables.length + padding)
+                      .attr("style", "background-color: transparent;")
+                      .append("g")
+                      .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
 
-            svg.selectAll(".x.axis")
-                .data(variables)
-                .enter().append("g")
-                .attr("class", "x-axis")
-                .attr("transform", (d, i) => "translate(" + i * size + ",0)")
-                .each(function (d, i) { 
-                      d3.select(this)
-                          .call(xAxis.scale(x[i]))
-                          .style("color", "lightgrey"); });
+        svg.selectAll(".x.axis")
+            .data(variables)
+            .enter().append("g")
+            .attr("class", "x-axis")
+            .attr("transform", (d, i) => "translate(" + i * size + ",0)")
+            .each(function (d, i) { 
+                  d3.select(this)
+                      .call(xAxis.scale(x[i]))
+                      .style("color", "lightgrey"); });
 
-            svg.selectAll(".y.axis")
-                .data(variables)
-                .enter().append("g")
-                .attr("class", "y-axis")
-                .attr("transform", (d, i) => "translate(0," + i * size + ")")
-                .each(function (d, i) { 
-                    d3.select(this)
-                        .call(yAxis.scale(y[i]))
-                        .style("color", "lightgrey"); });
-
-            svg.selectAll(".title")
-                .data(variables)
-                .enter().append("g")
-                .attr("class", "title")
-                .attr("transform", (d, i) => `translate(${i * size},${i * size})`)
-                .append("text")
-                .attr("x", padding / 2)
-                .attr("y", padding / 2)
-                .attr("dy", ".71em")
-                .attr("font-size", 14)
-                .text(d => d);
-
-            const cell = svg.selectAll(".cell")
-                .data(cross(variables, variables))
-                .enter().append("g")
-                .attr("class", "cell")
-                .attr("transform", d => "translate(" + d.i * size + "," + d.j * size + ")")
-                .each(plot);
-            // Tooltip
-            const tooltip = d3.select("#matrix-tooltip");
-
-            function showTooltip(d, variables) {
-              tooltip.style("display", "inline")
-                .html(`
-                  <strong>Category:</strong> ${d["Category"]}<br>
-                  <strong>Description:</strong> ${d["Description"]}<br>
-                  <strong>${variables[0]}:</strong> ${d[variables[0]]}<br>
-                  <strong>${variables[1]}:</strong> ${d[variables[1]]}<br>
-                  <strong>${variables[2]}:</strong> ${d[variables[2]]}<br>
-                  <strong>${variables[3]}:</strong> ${d[variables[3]]}
-                `);
-            }
-
-            function moveTooltip(event) {
-              tooltip.style("left", (event.pageX + 10) + "px")
-                .style("top", (event.pageY + 10) + "px");
-            }
-
-            function hideTooltip() {
-              tooltip.style("display", "none");
-            }
-            
-            function plot(p, selectedCategory) {
-              //update variables here before draw the plot!!!
-              ////
-              const newvariables = updateVariables();
-
-              const cell = d3.select(this);
-
-              cell.append("rect")
-                .attr("class", "frame")
-                .attr("x", padding / 2)
-                .attr("y", padding / 2)
-                .attr("width", size - padding)
-                .attr("height", size - padding)
-                .attr("style", "fill: none; stroke: black;");
-
-              const filteredData = selectedCategory === "all" ? data : data.filter(d => d.Category === selectedCategory);
-              
-              //bug problem: should use newvariable but not variable here
-              const x = newvariables.map(variable => d3.scaleLinear()
-                                    .domain(d3.extent(filteredData, d => Number(d[variable])))
-                                    .rangeRound([padding / 2, size - padding / 2]));
-
-              const y = x.map(
-                          x => x.copy()
-                                .range([size - padding / 2, padding / 2])
-                              );
-
-              cell.each(function (p) {
-                const currentCell = d3.select(this);
-                
-                const circles = currentCell.selectAll("circle")
-                  .data(filteredData)
-                  .enter().append("circle")
-                  .attr("class", 'scattorplot-circle')
-                  .style("opacity", "0.7")
-                  .attr("cx", d => x[p.i](d[newvariables[p.i]]))
-                  .attr("cy", d => y[p.j](d[newvariables[p.j]]))
-                  .attr("r", 3)
-                  .attr("style", d => "fill: " + z(d.Category) + "; stroke: none;")
-                  .on("mouseover", (event, d) => {
-                  showTooltip(d, newvariables);
-                  moveTooltip(event);
-                  d3.select(event.currentTarget).style("cursor", "pointer")
-                    .style("stroke", "black")
-                    .style("stroke-width", "2px");
-                  d3.selectAll(".scattorplot-circle")
-                    .style("opacity", 0.3);
-      
-                  d3.select(event.currentTarget)
-                    .style("opacity", 0.7)
-                    .attr('r', 10);
-                })
-                .on("mousemove", (event) => {
-                  moveTooltip(event);
-                })
-                .on("mouseout", (event) => { 
-                  hideTooltip();
-                  d3.select(event.currentTarget).style("cursor", "default")
-                    .style("stroke", "none")
-                    .attr("r", 3);
-
-                  d3.selectAll(".scattorplot-circle")
-                    .style("opacity", 0.7);
-                  
-                });
-              });
-            }
-
-            function cross(a, b) {
-                const c = [];
-                for (let i = 0; i < a.length; i++) {
-                    for (let j = 0; j < b.length; j++) {
-                        c.push({ x: a[i], i: i, y: b[j], j: j });
-                    }
-                }
-                return c;
-            }
-
-            const color = d3.scaleOrdinal(["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf", "#dba860","#100102" ])
-                            .domain(Array.from(new Set(data.map(d => d["Category"])))); 
-            
-            const uniqueCategories = new Set(data.map(d => d["Category"]));
-            const lengthCategory = uniqueCategories.size;
-
-            const legend_svg = d3.select("#eight-section-legend")
-                .append("svg")
-                .attr("width", 300)
-                .attr("height", 30 * lengthCategory)
-                .attr("style", "background-color: transparent;")
-                .append("g")
-                .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
-            const legend = legend_svg.append("g")
-                .attr("class", "legend")
-                //.attr("transform", `translate(${size * (variables.length - 1)}, 0)`);
-
-            const legendData = color.domain().map((d, i) => ({category: d, color: color(d)}));
-
-            legend.selectAll("circle")
-                .data(legendData)
-                .enter().append("circle")
-                .attr("cx", 1)
-                .attr("cy", (d, i) => padding * (i + 1))
-                .attr("r", 5)
-                .style("fill", d => d.color);
-
-            legend.selectAll("text")
-                .data(legendData)
-                .enter()
-                .append("text")
-                .attr("x", 1 + 6)
-                .attr("y", (d, i) => padding * (i + 1))
-                .attr("dy", ".35em")
-                .text(d => d.category);
-
-            function updatePlot() {
-              const selectedCategory = dropdown.node().value;
-              svg.selectAll(".cell").each(function (p) {
+        svg.selectAll(".y.axis")
+            .data(variables)
+            .enter().append("g")
+            .attr("class", "y-axis")
+            .attr("transform", (d, i) => "translate(0," + i * size + ")")
+            .each(function (d, i) { 
                 d3.select(this)
-                  .selectAll("circle")
-                  .remove();
-                plot.call(this, p, selectedCategory);
-              });
-            }
-            updatePlot("all");
-          // ----------------------------------------
-            
-            dropdown1.on("change", function () {
-              updateChart();
-            });
-            dropdown2.on("change", function () {
-              updateChart();
-            });
-            dropdown3.on("change", function () {
-              updateChart();
-            });
+                    .call(yAxis.scale(y[i]))
+                    .style("color", "lightgrey"); });
 
-            function updateChart() {
-              // for the categroy!!!!! I got it !!!!!!! Finally!!!
-              //filter the data before do the dropdown123 update!!!
-              const selectedCategory = dropdown.node().value;
-              const filteredData = selectedCategory === "all" ? data : data.filter(d => d.Category === selectedCategory);
+        svg.selectAll(".title")
+            .data(variables)
+            .enter().append("g")
+            .attr("class", "title")
+            .attr("transform", (d, i) => `translate(${i * size},${i * size})`)
+            .append("text")
+            .attr("x", padding / 2)
+            .attr("y", padding / 2)
+            .attr("dy", ".71em")
+            .attr("font-size", 14)
+            .text(d => d);
+
+        const cell = svg.selectAll(".cell")
+            .data(cross(variables, variables))
+            .enter().append("g")
+            .attr("class", "cell")
+            .attr("transform", d => "translate(" + d.i * size + "," + d.j * size + ")")
+            .each(plot);
+        // Tooltip
+        const tooltip = d3.select("#matrix-tooltip");
+
+        function showTooltip(d, variables) {
+          tooltip.style("display", "inline")
+            .html(`
+              <strong>Category:</strong> ${d["Category"]}<br>
+              <strong>Description:</strong> ${d["Description"]}<br>
+              <strong>${variables[0]}:</strong> ${d[variables[0]]}<br>
+              <strong>${variables[1]}:</strong> ${d[variables[1]]}<br>
+              <strong>${variables[2]}:</strong> ${d[variables[2]]}<br>
+              <strong>${variables[3]}:</strong> ${d[variables[3]]}
+            `);
+        }
+
+        function moveTooltip(event) {
+          tooltip.style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY + 10) + "px");
+        }
+
+        function hideTooltip() {
+          tooltip.style("display", "none");
+        }
+        
+        function plot(p, selectedCategory) {
+          //update variables here before draw the plot!!!
+          ////
+          const newvariables = updateVariables();
+
+          const cell = d3.select(this);
+
+          cell.append("rect")
+            .attr("class", "frame")
+            .attr("x", padding / 2)
+            .attr("y", padding / 2)
+            .attr("width", size - padding)
+            .attr("height", size - padding)
+            .attr("style", "fill: none; stroke: black;");
+
+          const filteredData = selectedCategory === "all" ? data : data.filter(d => d.Category === selectedCategory);
+          
+          //bug problem: should use newvariable but not variable here
+          const x = newvariables.map(variable => d3.scaleLinear()
+                                .domain(d3.extent(filteredData, d => Number(d[variable])))
+                                .rangeRound([padding / 2, size - padding / 2]));
+
+          const y = x.map(
+                      x => x.copy()
+                            .range([size - padding / 2, padding / 2])
+                          );
+
+          cell.each(function (p) {
+            const currentCell = d3.select(this);
+            
+            const circles = currentCell.selectAll("circle")
+              .data(filteredData)
+              .enter()
+              .append("circle")
+              .attr("class", 'scattorplot-circle')
+              .style("opacity", "0.7")
+              .attr("cx", d => x[p.i](d[newvariables[p.i]]))
+              .attr("cy", d => y[p.j](d[newvariables[p.j]]))
+              .attr("r", 3)
+              .attr("style", d => "fill: " + z(d.Category) + "; stroke: none;")
+              .on("mouseover", (event, d) => {
+              showTooltip(d, newvariables);
+              moveTooltip(event);
+              d3.select(event.currentTarget).style("cursor", "pointer")
+                .style("stroke", "black")
+                .style("stroke-width", "2px");
+              d3.selectAll(".scattorplot-circle")
+                .style("opacity", 0.3);
+  
+              d3.select(event.currentTarget)
+                .style("opacity", 0.7)
+                .attr('r', 10);
+            })
+            .on("mousemove", (event) => {
+              moveTooltip(event);
+            })
+            .on("mouseout", (event) => { 
+              hideTooltip();
+              d3.select(event.currentTarget).style("cursor", "default")
+                .style("stroke", "none")
+                .attr("r", 3);
+
+              d3.selectAll(".scattorplot-circle")
+                .style("opacity", 0.7);
               
-              const variables = updateVariables();
-              //console.log(variables)
-              const { x, y } = prepareData(filteredData, variables);
+            });
+          });
+        }
 
-              function prepareData(data, variables) {
-                const x = variables.map((variable) =>
-                  d3.scaleLinear()
-                    .domain(d3.extent(data, (d) => Number(d[variable])))
-                    .rangeRound([padding / 2, size - padding / 2])
-                );
+        function cross(a, b) {
+            const c = [];
+            for (let i = 0; i < a.length; i++) {
+                for (let j = 0; j < b.length; j++) {
+                    c.push({ x: a[i], i: i, y: b[j], j: j });
+                }
+            }
+            return c;
+        }
 
-                const y = x.map((x) => x.copy().range([size - padding / 2, padding / 2]));
+        const color = d3.scaleOrdinal(["#1f77b4","#ff7f0e","#2ca02c","#d62728","#9467bd","#8c564b","#e377c2","#7f7f7f","#bcbd22","#17becf", "#dba860","#100102" ])
+                        .domain(Array.from(new Set(data.map(d => d["Category"])))); 
+        
+        const uniqueCategories = new Set(data.map(d => d["Category"]));
+        const lengthCategory = uniqueCategories.size;
 
-                return { x, y };
-              }
+        const legend_svg = d3.select("#eight-section-legend")
+            .append("svg")
+            .attr("width", 300)
+            .attr("height", 30 * lengthCategory)
+            .attr("style", "background-color: transparent;")
+            .append("g")
+            .attr("transform", "translate(" + padding + "," + padding / 2 + ")");
+        const legend = legend_svg.append("g")
+            .attr("class", "legend")
+            //.attr("transform", `translate(${size * (variables.length - 1)}, 0)`);
 
-              d3.selectAll("#eight-section circle").remove();
-              d3.selectAll("#eight-section .title").remove();
-              d3.selectAll("#eight-section .x-axis").remove();
-              d3.selectAll("#eight-section .y-axis").remove();
+        const legendData = color.domain().map((d, i) => ({category: d, color: color(d)}));
+
+        legend.selectAll("circle")
+            .data(legendData)
+            .enter().append("circle")
+            .attr("cx", 1)
+            .attr("cy", (d, i) => padding * (i + 1))
+            .attr("r", 5)
+            .style("fill", d => d.color);
+
+        legend.selectAll("text")
+            .data(legendData)
+            .enter()
+            .append("text")
+            .attr("x", 1 + 6)
+            .attr("y", (d, i) => padding * (i + 1))
+            .attr("dy", ".35em")
+            .text(d => d.category);
+
+        function updatePlot() {
+          const selectedCategory = dropdown.node().value;
+          svg.selectAll(".cell").each(function (p) {
+            d3.select(this)
+              .selectAll("circle")
+              .remove();
+            plot.call(this, p, selectedCategory);
+          });
+        }
+        updatePlot("all");
+      // ----------------------------------------
+        
+        dropdown1.on("change", function () {
+          updateChart();
+        });
+        dropdown2.on("change", function () {
+          updateChart();
+        });
+        dropdown3.on("change", function () {
+          updateChart();
+        });
+
+        function updateChart() {
+          // for the categroy!!!!! I got it !!!!!!! Finally!!!
+          //filter the data before do the dropdown123 update!!!
+          const selectedCategory = dropdown.node().value;
+          const filteredData = selectedCategory === "all" ? data : data.filter(d => d.Category === selectedCategory);
+          
+          const variables = updateVariables();
+          //console.log(variables)
+          const { x, y } = prepareData(filteredData, variables);
+
+          function prepareData(data, variables) {
+            const x = variables.map((variable) =>
+              d3.scaleLinear()
+                .domain(d3.extent(data, (d) => Number(d[variable])))
+                .rangeRound([padding / 2, size - padding / 2])
+            );
+
+            const y = x.map((x) => x.copy().range([size - padding / 2, padding / 2]));
+
+            return { x, y };
+          }
+
+          d3.selectAll("#eight-section circle").remove();
+          d3.selectAll("#eight-section .title").remove();
+          d3.selectAll("#eight-section .x-axis").remove();
+          d3.selectAll("#eight-section .y-axis").remove();
+        
+          const xAxis = d3.axisBottom()
+            .ticks(6)
+            .tickSize(size * variables.length);
+
+          const yAxis = d3.axisLeft()
+            .ticks(6)
+            .tickSize(-size * variables.length);
+
+          svg.selectAll(".x.axis")
+            .data(variables)
+            .enter().append("g")
+            .attr("class", "x-axis")
+            .attr("transform", (d, i) => "translate(" + i * size + ",0)")
+            .each(function (d, i) { 
+                    d3.select(this)
+                      .call(xAxis.scale(x[i]))
+                      .style("color", "lightgrey"); })
+            .lower();
+
+          svg.selectAll(".y.axis")
+            .data(variables)
+            .enter().append("g")
+            .attr("class", "y-axis")
+            .attr("transform", (d, i) => "translate(0," + i * size + ")")
+            .each(function (d, i) { 
+                    d3.select(this)
+                      .call(yAxis.scale(y[i]))
+                      .style("color", "lightgrey"); })
+            .lower();
+
+          const cell = d3.selectAll("#eight-section .cell");
+
+          cell.each(function (p) {
             
-              const xAxis = d3.axisBottom()
-                .ticks(6)
-                .tickSize(size * variables.length);
+            const currentCell = d3.select(this);
+            
+            const circles = currentCell.selectAll("circle")
+              .data(filteredData)
+              .enter().append("circle")
+              .attr("class", 'scattorplot-circle')
+              .style("opacity", "0.7")
+              .attr("cx", d => x[p.i](d[variables[p.i]]))
+              .attr("cy", d => y[p.j](d[variables[p.j]]))
+              .attr("r", 3)
+              .attr("style", d => "fill: " + z(d.Category) + "; stroke: none;")
+              .on("mouseover", (event, d) => {
+              showTooltip(d, variables);
+              moveTooltip(event);
+              d3.select(event.currentTarget).style("cursor", "pointer")
+                .style("stroke", "black")
+                .style("stroke-width", "2px");
+              d3.selectAll(".scattorplot-circle")
+                .style("opacity", 0.3);
+  
+              d3.select(event.currentTarget)
+                .style("opacity", 0.7)
+                .attr('r', 10);
+            })
+            .on("mousemove", (event) => {
+              moveTooltip(event);
+            })
+            .on("mouseout", (event) => { 
+              hideTooltip();
+              d3.select(event.currentTarget).style("cursor", "default")
+                .style("stroke", "none")
+                .attr("r", 3);
 
-              const yAxis = d3.axisLeft()
-                .ticks(6)
-                .tickSize(-size * variables.length);
+              d3.selectAll(".scattorplot-circle")
+                .style("opacity", 0.7);
+              
+            });
+          });
 
-              svg.selectAll(".x.axis")
-                .data(variables)
-                .enter().append("g")
-                .attr("class", "x-axis")
-                .attr("transform", (d, i) => "translate(" + i * size + ",0)")
-                .each(function (d, i) { 
-                        d3.select(this)
-                          .call(xAxis.scale(x[i]))
-                          .style("color", "lightgrey"); })
-                .lower();
-
-              svg.selectAll(".y.axis")
-                .data(variables)
-                .enter().append("g")
-                .attr("class", "y-axis")
-                .attr("transform", (d, i) => "translate(0," + i * size + ")")
-                .each(function (d, i) { 
-                        d3.select(this)
-                          .call(yAxis.scale(y[i]))
-                          .style("color", "lightgrey"); })
-                .lower();
-
-              const cell = d3.selectAll("#eight-section .cell");
-
-              cell.each(function (p) {
-                
-                const currentCell = d3.select(this);
-                
-                const circles = currentCell.selectAll("circle")
-                  .data(filteredData)
-                  .enter().append("circle")
-                  .attr("class", 'scattorplot-circle')
-                  .style("opacity", "0.7")
-                  .attr("cx", d => x[p.i](d[variables[p.i]]))
-                  .attr("cy", d => y[p.j](d[variables[p.j]]))
-                  .attr("r", 3)
-                  .attr("style", d => "fill: " + z(d.Category) + "; stroke: none;")
-                  .on("mouseover", (event, d) => {
-                  showTooltip(d, variables);
-                  moveTooltip(event);
-                  d3.select(event.currentTarget).style("cursor", "pointer")
-                    .style("stroke", "black")
-                    .style("stroke-width", "2px");
-                  d3.selectAll(".scattorplot-circle")
-                    .style("opacity", 0.3);
-      
-                  d3.select(event.currentTarget)
-                    .style("opacity", 0.7)
-                    .attr('r', 10);
-                })
-                .on("mousemove", (event) => {
-                  moveTooltip(event);
-                })
-                .on("mouseout", (event) => { 
-                  hideTooltip();
-                  d3.select(event.currentTarget).style("cursor", "default")
-                    .style("stroke", "none")
-                    .attr("r", 3);
-
-                  d3.selectAll(".scattorplot-circle")
-                    .style("opacity", 0.7);
-                  
-                });
-              });
-
-              svg.selectAll(".title")
-              .data(variables)
-                            .enter().append("g")
-                            .attr("class", "title")
-                            .attr("transform", (d, i) => `translate(${i * size},${i * size})`)
-                            .append("text")
-                            .attr("x", padding / 2)
-                            .attr("y", padding / 2)
-                            .attr("dy", ".71em")
-                            .attr("font-size", 14)
-                            .text(d => d);
+          svg.selectAll(".title")
+          .data(variables)
+                        .enter().append("g")
+                        .attr("class", "title")
+                        .attr("transform", (d, i) => `translate(${i * size},${i * size})`)
+                        .append("text")
+                        .attr("x", padding / 2)
+                        .attr("y", padding / 2)
+                        .attr("dy", ".71em")
+                        .attr("font-size", 14)
+                        .text(d => d);
             }      
         };
 
